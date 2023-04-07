@@ -1,4 +1,4 @@
-#!/run/media/nnisarggada/College/Nychess-APK/NyChessEnv/bin/python
+#!/home/nnisarggada/GitRepos/NyChess/NyChessEnv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
