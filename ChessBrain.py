@@ -76,14 +76,10 @@ def find_best_move(gs, valid_moves):
 
     next_move = None
     counter = 0
-    winning = "Black" if current_score < 0 else "White"
 
     find_negamax_move_alpha_beta_pruning(gs, valid_moves, DEPTH, -CHECKMATE, CHECKMATE, 1 if gs.white_to_move else -1)
 
-    print()
     print(f'No. of moves calculated: {counter}')
-    print(f'Winning probability: {winning} {round(abs(current_score), 2)}%')
-    print()
 
     if next_move is None:
         print("No move found :/")
