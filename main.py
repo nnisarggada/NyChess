@@ -20,7 +20,7 @@ def load_images():
 
     for piece in pieces:
 
-        IMAGES[piece] = p.image.load(f'./images/{piece}.png').convert_alpha()
+        IMAGES[piece] = p.image.load(f'{piece}.png').convert_alpha()
         IMAGES[piece] = p.transform.scale(IMAGES[piece], (SQ_SIZE, SQ_SIZE))
 
 
@@ -36,8 +36,8 @@ def main():
     move_made = False
     animate = False
 
-    move_sound = p.mixer.Sound('./sounds/move.wav')
-    capture_sound = p.mixer.Sound('./sounds/capture.wav')
+    move_sound = p.mixer.Sound('move.wav')
+    capture_sound = p.mixer.Sound('capture.wav')
 
     load_images()
     running = True
