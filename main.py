@@ -1,3 +1,4 @@
+import multiprocessing
 import pygame as p
 import ChessEngine
 import ChessBrain
@@ -61,7 +62,7 @@ def main():
         if not game_start:
             screen.fill(p.Color("Black"))
             font = p.font.SysFont("Helvetica", 72, True, False)
-            text_object = font.render("NyChess", 1, p.Color("White"))
+            text_object = font.render("NyChess", True, p.Color("White"))
             text_location = p.Rect(0, 0, WIDTH, HEIGHT).move(
                 WIDTH / 2 - text_object.get_width() / 2, HEIGHT / 2 - text_object.get_height() / 2 - 200)
             screen.blit(text_object, text_location)
@@ -215,13 +216,23 @@ def main():
                         flipped = 0
 
         if not game_over and not human_turn and not move_undone:
-            ai_move = ChessBrain.find_best_move(gs, valid_moves)
-            if ai_move is None:
-                ai_move = ChessBrain.find_random_move(valid_moves)
-            gs.make_move(ai_move)
-            move_made = True
-            animate = True
-            ai_thinking = False
+
+            if not ai_thinking:
+                ai_thinking = True
+                returnQueue = Queue() 
+                move_finder_process = multiprocessing.Process(target=ChessBrain.find_best_move, args=(gs, valid_moves, returnQueue))
+                move_finder_process.start()
+            
+            if not move_finder_process.is_alive():
+                ai_move = returnQueue.get()
+                if ai_move is None:
+                    ai_move = ChessBrain.find_random_move(valid_moves)
+                gs.make_move(ai_move)
+                move_made = True
+                animate = True
+                ai_thinking = False
+                sq_selected = ()
+                player_clicks = []
 
         if move_made:
 

@@ -70,7 +70,7 @@ def find_random_move(valid_moves):
     return random.choice(valid_moves)
 
 
-def find_best_move(gs, valid_moves):
+def find_best_move(gs, valid_moves, returnQueue):
 
     global next_move, counter, current_score
 
@@ -84,7 +84,7 @@ def find_best_move(gs, valid_moves):
     if next_move is None:
         print("No move found :/")
 
-    return next_move
+    returnQueue.put(next_move)
 
 
 def find_negamax_move_alpha_beta_pruning(gs, valid_moves, depth, alpha, beta, turn_multiplier):
