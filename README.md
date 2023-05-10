@@ -32,3 +32,11 @@ Uninstall using the included `uninstall.sh` script or by running the following c
 ## Windows
 
 ### Coming Soon...
+
+## Controls
+
+Press **' m '** to **return to main menu**
+
+Press **' z '** to **undo move**
+
+Press **' f '** to **flip board**
