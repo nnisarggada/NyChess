@@ -1,8 +1,9 @@
-import multiprocessing
 import pygame as p
 import ChessEngine
 import ChessBrain
-from multiprocessing import Queue
+import sys
+import os
+from multiprocessing import Queue, Process
 
 
 p.init()
@@ -13,6 +14,11 @@ SQ_SIZE = WIDTH // DIMENSION
 MAX_FPS = 15
 IMAGES = {}
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 
 def load_images():
 
@@ -21,7 +27,7 @@ def load_images():
 
     for piece in pieces:
 
-        IMAGES[piece] = p.image.load(f'{piece}.png').convert_alpha()
+        IMAGES[piece] = p.image.load(resource_path(f'{piece}.png')).convert_alpha()
         IMAGES[piece] = p.transform.scale(IMAGES[piece], (SQ_SIZE, SQ_SIZE))
 
 
@@ -37,8 +43,8 @@ def main():
     move_made = False
     animate = False
 
-    move_sound = p.mixer.Sound('move.wav')
-    capture_sound = p.mixer.Sound('capture.wav')
+    move_sound = p.mixer.Sound(resource_path('move.wav'))
+    capture_sound = p.mixer.Sound(resource_path('capture.wav'))
 
     load_images()
     running = True
@@ -220,7 +226,7 @@ def main():
             if not ai_thinking:
                 ai_thinking = True
                 returnQueue = Queue() 
-                move_finder_process = multiprocessing.Process(target=ChessBrain.find_best_move, args=(gs, valid_moves, returnQueue))
+                move_finder_process = Process(target=ChessBrain.find_best_move, args=(gs, valid_moves, returnQueue))
                 move_finder_process.start()
             
             if not move_finder_process.is_alive():
