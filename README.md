@@ -6,13 +6,17 @@
 
 A python Chess Engine and AI
 
-## Linux
+## Installation
 
-### Installation
+### Windows
 
-#### AppImage
+[Install EXE](https://github.com/nnisarggada/NyChess/releases/tag/Windows)
 
-https://github.com/nnisarggada/NyChess/releases/tag/Linux
+### Linux AppImage
+
+[Install AppImage](https://github.com/nnisarggada/NyChess/releases/tag/Linux)
+
+### Linux Manual Install
 
 Install using the included `install.sh` script or by running the following commands after cloning the repo -
 
@@ -23,7 +27,7 @@ Install using the included `install.sh` script or by running the following comma
   sudo cp NyChess.svg /usr/share/icons/
 ```
 
-### Uninstalling
+### Linux Manual Uninstalling
 
 Uninstall using the included `uninstall.sh` script or by running the following commands after cloning the repo -
 
@@ -32,10 +36,6 @@ Uninstall using the included `uninstall.sh` script or by running the following c
   sudo rm -rf ~/.local/share/applications/NyChess.desktop
   sudo rm -rf /usr/share/icons/NyChess.svg
 ```
-
-## Windows
-
-### Coming Soon...
 
 ## Controls
 
