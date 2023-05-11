@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=NyChess (Chess Game)
+Exec=NyChess-Linux
+Icon=Logo
+Type=Application
+Categories=Game;
+Terminal=false
