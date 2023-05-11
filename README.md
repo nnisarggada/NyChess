@@ -10,6 +10,10 @@ A python Chess Engine and AI
 
 ### Installation
 
+#### AppImage
+
+https://github.com/nnisarggada/NyChess/releases/tag/Linux
+
 Install using the included `install.sh` script or by running the following commands after cloning the repo -
 
 ```bash
