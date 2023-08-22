@@ -5,4 +5,5 @@ Type=Application
 Terminal=false
 Exec=/usr/bin/NyChess-Linux
 Name=NyChess (Chess Game)
+Comment=chess
 Icon=NyChess
