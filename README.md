@@ -23,6 +23,7 @@ Install using the included `install.sh` script or by running the following comma
 ```bash
   cd NyChess
   sudo cp ./NyChess-Linux /usr/bin/
+  sudo mkdir ~/.local/share/applications
   sudo cp ./NyChess.desktop ~/.local/share/applications/
   sudo cp NyChess.svg /usr/share/icons/
 ```
