@@ -15,7 +15,6 @@ MAX_FPS = 15
 IMAGES = {}
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
@@ -156,7 +155,15 @@ def main():
 
             elif e.type == p.KEYDOWN:
 
-                if e.key == p.K_m and game_start:
+                if e.key == p.K_a and game_start:
+                    if white_human and gs.white_to_move:
+                        white_human = False
+                    elif black_human and not gs.white_to_move:
+                        black_human = False
+
+                if e.key == p.K_m:
+                    white_human = True
+                    black_human = True
                     flipped = 0
                     game_start = False
                     gs = ChessEngine.GameState()
@@ -221,14 +228,14 @@ def main():
                     else:
                         flipped = 0
 
-        if not game_over and not human_turn and not move_undone:
+        if not game_over and not human_turn and not move_undone and game_start:
 
             if not ai_thinking:
                 ai_thinking = True
-                returnQueue = Queue() 
+                returnQueue = Queue()
                 move_finder_process = Process(target=ChessBrain.find_best_move, args=(gs, valid_moves, returnQueue))
                 move_finder_process.start()
-            
+
             if not move_finder_process.is_alive():
                 ai_move = returnQueue.get()
                 if ai_move is None:

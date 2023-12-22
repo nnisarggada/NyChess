@@ -1,4 +1,7 @@
 import random
+import json
+import os
+from ChessEngine import Move
 
 piece_score = {"K": 0, "Q": 90, "R": 50, "B": 40, "N": 30, "p": 10}
 
@@ -52,7 +55,6 @@ white_pawn_score = [[8, 8, 8, 8, 8, 8, 8, 8],
                     [0, 0, 0, 0, 0, 0, 0, 0]]
 
 black_pawn_score = [[0, 0, 0, 0, 0, 0, 0, 0],
-
                     [1, 1, 1, 0, 0, 1, 1, 1],
                     [1, 2, 3, 4, 4, 3, 2, 1],
                     [2, 3, 3, 5, 5, 3, 3, 2],
@@ -64,15 +66,56 @@ black_pawn_score = [[0, 0, 0, 0, 0, 0, 0, 0],
 piece_position_scores = {"N": knight_score, "Q": queen_score, "R": rook_score,
                          "B": bishop_score, "bp": black_pawn_score, "wp": white_pawn_score}
 
+def save_scores(gs, score):
+
+    new_data = {
+        "gs": gs,
+        "move": score
+    }
+
+    file_path = os.path.join(os.getcwd(), "db.json")
+
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = []
+
+    matching_entry = next((entry for entry in data if entry["gs"] == new_data["gs"]), None)
+
+    if matching_entry is None:
+        data.append(new_data)
+
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=2)
 
 def find_random_move(valid_moves):
-
     return random.choice(valid_moves)
 
 
 def find_best_move(gs, valid_moves, returnQueue):
 
     global next_move, counter, current_score
+
+    file_path = os.path.join(os.getcwd(), "db.json")
+
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = []
+
+    matching_entry = None
+
+    for entry in data:
+        if entry["gs"] == gs.to_dict():
+            matching_entry = entry
+            break
+
+    if matching_entry is not None:
+        print('Found matching entry')
+        returnQueue.put(Move.from_dict(matching_entry["move"]))
+        return
 
     next_move = None
     counter = 0
@@ -81,8 +124,12 @@ def find_best_move(gs, valid_moves, returnQueue):
 
     print(f'No. of moves calculated: {counter}')
 
-    if next_move is None:
+
+    if next_move is not None:
+        save_scores(gs.to_dict(), next_move.to_dict())
+    else:
         print("No move found :/")
+        next_move = find_random_move(valid_moves)
 
     returnQueue.put(next_move)
 
@@ -120,8 +167,7 @@ def find_negamax_move_alpha_beta_pruning(gs, valid_moves, depth, alpha, beta, tu
 
         counter += 1
 
-        score += -find_negamax_move_alpha_beta_pruning(
-            gs, next_moves, depth - 1, -beta, -alpha, -turn_multiplier)
+        score += -find_negamax_move_alpha_beta_pruning(gs, next_moves, depth - 1, -beta, -alpha, -turn_multiplier)
 
         if score > max_score:
             max_score = score
@@ -138,12 +184,11 @@ def find_negamax_move_alpha_beta_pruning(gs, valid_moves, depth, alpha, beta, tu
             break
 
     current_score = turn_multiplier * max_score
-
     return max_score
-
 
 def get_score_board(gs):
 
+    
     global current_score
 
     if gs.is_checkmate:

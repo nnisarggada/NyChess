@@ -706,6 +706,42 @@ class GameState():
         self.get_rook_moves(r, c, moves)
         self.get_bishop_moves(r, c, moves)
 
+    def to_dict(self):
+        return {
+            'board': self.board,
+            'white_to_move': self.white_to_move,
+            'movelog': [move.to_dict() for move in self.movelog],
+            'is_capture': self.is_capture,
+            'in_check': self.in_check,
+            'pins': self.pins,
+            'checks': self.checks,
+            'is_checkmate': self.is_checkmate,
+            'is_stalemate': self.is_stalemate,
+            'enpassant_possible': list(self.enpassant_possible),
+            'enpassant_possible_log': [list(self.enpassant_possible) for self.enpassant_possible in self.enpassant_possible_log],
+            'current_castling_rights': self.current_castling_rights.to_dict(),
+            'castling_rights_log': [rights.to_dict() for rights in self.castling_rights_log],
+            'has_castled': self.has_castled
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        game_state = cls()
+        game_state.board = data['board']
+        game_state.white_to_move = data['white_to_move']
+        game_state.movelog = [Move.from_dict(move_data) for move_data in data['movelog']]
+        game_state.is_capture = data['is_capture']
+        game_state.in_check = data['in_check']
+        game_state.pins = data['pins']
+        game_state.checks = data['checks']
+        game_state.is_checkmate = data['is_checkmate']
+        game_state.is_stalemate = data['is_stalemate']
+        game_state.enpassant_possible = list(data['enpassant_possible'])
+        game_state.enpassant_possible_log = [list(enpassant_data) for enpassant_data in data['enpassant_possible_log']]
+        game_state.current_castling_rights = CastlingRights.from_dict(data['current_castling_rights'])
+        game_state.castling_rights_log = [CastlingRights.from_dict(rights_data) for rights_data in data['castling_rights_log']]
+        game_state.has_castled = data['has_castled']
+        return game_state
 
 class CastlingRights():
 
@@ -714,6 +750,18 @@ class CastlingRights():
         self.wqs = wqs
         self.bks = bks
         self.bqs = bqs
+
+    def to_dict(self):
+        return {
+            'wks': self.wks,
+            'wqs': self.wqs,
+            'bks': self.bks,
+            'bqs': self.bqs
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data['wks'], data['wqs'], data['bks'], data['bqs'])
 
 
 class Move():
@@ -727,6 +775,7 @@ class Move():
 
     def __init__(self, start_sq, end_sq, board, is_enpassant_move=False, is_castle_move=False):
 
+        self.board = board
         self.start_row = start_sq[0]
         self.start_col = start_sq[1]
         self.end_row = end_sq[0]
@@ -759,3 +808,26 @@ class Move():
 
     def get_rank_file(self, r, c):
         return self.cols_to_files[c] + self.rows_to_ranks[r]
+
+    def to_dict(self):
+        return {
+            "start_row": self.start_row,
+            "start_col": self.start_col,
+            "end_row": self.end_row,
+            "end_col": self.end_col,
+            "board": self.board,
+            "is_enpassant": self.is_enpassant,
+            "is_castle_move": self.is_castle_move,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        start_row = data.get('start_row')
+        start_col = data.get('start_col')
+        end_row = data.get('end_row')
+        end_col = data.get('end_col')
+        board = data.get('board')
+        is_enpassant = data.get('is_enpassant', False)
+        is_castle_move = data.get('is_castle_move', False)
+        move = cls((start_row, start_col), (end_row, end_col), board, is_enpassant, is_castle_move)
+        return move
